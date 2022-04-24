@@ -23,13 +23,21 @@
 	th, td {
 		padding: 7px;
 	}
+	.oikealle {
+		text-align: right;
+	}
 	/*tr:hover {background-color: coral;}*/
 	tr:nth-child(even) {background-color: #f2f2f2;}
 </style>
 <body>
-<input type="text" id="haku" onkeyup="haeTietoa()" placeholder="Search for names..">
+
 <table id="listaus">
 	<thead>
+		<tr>
+			<th class="oikealle">Hakusana:</th>
+			<th colspan="2"><input type="text" id="hakusana"></th>
+			<th><input type="button" value="Hae" id="hakunappi"></th>
+		</tr>
 		<tr>
 			<th>Etunimi</th>
 			<th>Sukunimi</th>
@@ -40,32 +48,26 @@
 	<tbody>
 	</tbody>
 </table>
-<script>
-function haeTietoa() {
-  // Declare variables
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("haku");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("listaus");
-  tr = table.getElementsByTagName("tr");
 
-  // Loop through all table rows, and hide those who don't match the search query
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[0];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
-}
-</script>
 <script>
 $ (document).ready(function() {
-	$.ajax({url:"asiakkaat", type: "GET", dataType:"json", success:function(result){ 
+	
+	haeAsiakkaat();
+	$("#hakunappi").click(function() {
+		console.log($("#hakusana").val());
+		haeAsiakkaat();
+	});
+	$(document.body).on("keydown", function(event) {
+		if(event.which==13) {
+			haeAsiakkaat();
+		}
+	});
+	$("#hakusana").focus();
+});
+
+function haeAsiakkaat(){
+	$("#listaus tbody").empty();
+	$.ajax({url:"asiakkaat/"+$("#hakusana").val(), type: "GET", dataType:"json", success:function(result){ 
 		$.each(result.asiakkaat, function(i, field) {
 			var htmlStr;
 			htmlStr+="<tr>";
@@ -77,7 +79,8 @@ $ (document).ready(function() {
 			$ ("#listaus tbody").append(htmlStr);
 		});
 	}});
-});
+}
+
 </script>
 </body>
 </html>
