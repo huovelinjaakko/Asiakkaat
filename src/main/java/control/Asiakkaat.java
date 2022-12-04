@@ -10,6 +10,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
@@ -31,6 +33,10 @@ public class Asiakkaat extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Asiakkaat.doGet()");
+		HttpSession session = request.getSession(true);
+		if(session.getAttribute("kayttaja")==null){
+			return;
+		}
 		String pathInfo = request.getPathInfo();				
 		System.out.println("polku: "+pathInfo);		
 		Dao dao = new Dao();
@@ -61,6 +67,10 @@ public class Asiakkaat extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Asiakkaat.doPost()");
+		HttpSession session = request.getSession(true);
+		if(session.getAttribute("kayttaja")==null){
+			return;
+		}
 		JSONObject jsonObj = new JsonStrToObj().convert(request);
 		Asiakas asiakas = new Asiakas();
 		asiakas.setEtunimi(jsonObj.getString("etunimi"));
@@ -79,6 +89,10 @@ public class Asiakkaat extends HttpServlet {
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Asiakkaat.doPut()");
+		HttpSession session = request.getSession(true);
+		if(session.getAttribute("kayttaja")==null){
+			return;
+		}
 		String strJSONInput = request.getReader().lines().collect(Collectors.joining());		
 		Asiakas asiakas = new Gson().fromJson(strJSONInput, Asiakas.class);				
 		response.setContentType("application/json; charset=UTF-8");
@@ -93,7 +107,11 @@ public class Asiakkaat extends HttpServlet {
 	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("Asiakkaat.doDelete()");	
+		System.out.println("Asiakkaat.doDelete()");
+		HttpSession session = request.getSession(true);
+		if(session.getAttribute("kayttaja")==null){
+			return;
+		}
 		String pathInfo = request.getPathInfo();
 		System.out.println("polku: "+pathInfo);
 		String poistettavaAsiakas = pathInfo.replace("/", "");

@@ -1,3 +1,4 @@
+<%@include file="header.jsp" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -34,6 +35,7 @@
 <table id="listaus">
 	<thead>
 		<tr>
+			<th><a id="linkki" href="login?logout=1">Kirjaudu ulos (<%out.print(session.getAttribute("kayttaja"));%>)</a></th>
 			<th colspan="5" class="oikealle"><span id="uusiAsiakas">Lisää asiakas</span></th>
 		</tr>
 		<tr>

@@ -17,8 +17,8 @@ public class Dao {
 	private Connection yhdista(){
     	Connection con = null;    	
     	String path = System.getProperty("catalina.base");    	
-    	path = path.substring(0, path.indexOf(".metadata")).replace("\\", "/"); //Eclipsessa
-    	//path += "/webapps/"; //Tuotannossa. Laita tietokanta webapps-kansioon
+    	//path = path.substring(0, path.indexOf(".metadata")).replace("\\", "/"); //Eclipsessa
+    	path += "/webapps/"; //Tuotannossa. Laita tietokanta webapps-kansioon
     	String url = "jdbc:sqlite:"+path+db;    	
     	try {	       
     		Class.forName("org.sqlite.JDBC");
@@ -167,5 +167,27 @@ public class Dao {
 			paluuArvo=false;
 		} 				
 		return paluuArvo;
+	}
+	
+	public String etsiKayttaja(String uid, String pwd) {
+		String nimi = null;
+		sql="SELECT * FROM asiakkaat WHERE sposti=? AND salasana=?";						  
+		try {
+			con = yhdista();
+			if(con!=null){ 
+				stmtPrep = con.prepareStatement(sql); 
+				stmtPrep.setString(1, uid);
+				stmtPrep.setString(2, pwd);
+        		rs = stmtPrep.executeQuery();  
+        		if(rs.isBeforeFirst()){
+        			rs.next();
+        			nimi = rs.getString("etunimi")+ " " +rs.getString("sukunimi");     			      			
+				}        		
+			}
+			con.close();
+		} catch (Exception e) {				
+			e.printStackTrace();			
+		} 				
+		return nimi;
 	}
 }
